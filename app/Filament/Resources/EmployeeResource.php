@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\EmployeeResource\Pages;
-use App\Filament\Resources\EmployeeResource\RelationManagers;
 use App\Models\Employee;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class EmployeeResource extends Resource
 {
@@ -39,7 +36,6 @@ class EmployeeResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->label('Email')
                     ->email()
-                    ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('phone')
                     ->label('Telepon')
@@ -53,12 +49,18 @@ class EmployeeResource extends Resource
                     ->label('Jabatan')
                     ->relationship('position', 'title')
                     ->required(),
-                Forms\Components\DatePicker::make('date_of_birth')
-                    ->label('Tanggal Lahir'),
-                Forms\Components\DatePicker::make('date_of_hire')
-                    ->label('Tanggal Masuk'),
-                Forms\Components\Textarea::make('address')
-                    ->label('Alamat'),
+                Forms\Components\TextInput::make('bank')
+                    ->label('Bank')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('account_number')
+                    ->label('Nomor Rekening')
+                    ->maxLength(255),
+                Forms\Components\DatePicker::make('active_membership_date')
+                    ->label('Tanggal Keanggotaan Aktif'),
+                Forms\Components\DatePicker::make('passport_expiry_date')
+                    ->label('Expired Passport'),
+                Forms\Components\DatePicker::make('visa_expiry_date')
+                    ->label('Expired Visa'),
                 Forms\Components\Select::make('status')
                     ->label('Status')
                     ->options([
@@ -80,8 +82,11 @@ class EmployeeResource extends Resource
                 Tables\Columns\TextColumn::make('phone')->label('Telepon')->sortable(),
                 Tables\Columns\TextColumn::make('department.name')->label('Divisi')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('position.title')->label('Jabatan')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('date_of_birth')->label('Tanggal Lahir')->date()->sortable(),
-                Tables\Columns\TextColumn::make('date_of_hire')->label('Tanggal Masuk')->date()->sortable(),
+                Tables\Columns\TextColumn::make('bank')->label('Bank')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('account_number')->label('Nomor Rekening')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('active_membership_date')->label('Tanggal Keanggotaan Aktif')->date()->sortable(),
+                Tables\Columns\TextColumn::make('passport_expiry_date')->label('Expired Passport')->date()->sortable(),
+                Tables\Columns\TextColumn::make('visa_expiry_date')->label('Expired Visa')->date()->sortable(),
                 Tables\Columns\TextColumn::make('status')->label('Status')->sortable(),
             ])
             ->filters([

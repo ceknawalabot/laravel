@@ -20,6 +20,11 @@ class Employee extends Model
         'date_of_hire',
         'address',
         'status',
+        'bank',
+        'account_number',
+        'active_membership_date',
+        'passport_expiry_date',
+        'visa_expiry_date',
     ];
 
     public function department()
@@ -30,5 +35,10 @@ class Employee extends Model
     public function position()
     {
         return $this->belongsTo(Position::class);
+    }
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
     }
 }

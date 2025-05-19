@@ -16,10 +16,20 @@ class LeaveRequest extends Model
         'type',
         'status',
         'reason',
+        'store_id',
+        'active_membership_date',
+        'contract_extension_status',
+        'scheduled_return',
+        // Removed departure_date and return_date as per previous instructions
     ];
 
     public function employee()
     {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
     }
 }
