@@ -22,6 +22,7 @@ class Employee extends Model
         'status',
         'bank',
         'account_number',
+        'account_holder_name',
         'active_membership_date',
         'passport_expiry_date',
         'visa_expiry_date',

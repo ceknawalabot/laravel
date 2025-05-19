@@ -31,7 +31,10 @@ class EmployeeResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('last_name')
                     ->label('Nama Belakang')
-                    ->required()
+                    ->nullable()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('account_holder_name')
+                    ->label('Nama Rekening')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->label('Email')
@@ -78,6 +81,7 @@ class EmployeeResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('first_name')->label('Nama Depan')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('last_name')->label('Nama Belakang')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('account_holder_name')->label('Nama Rekening')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('email')->label('Email')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('phone')->label('Telepon')->sortable(),
                 Tables\Columns\TextColumn::make('department.name')->label('Divisi')->sortable()->searchable(),
