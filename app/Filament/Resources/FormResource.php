@@ -14,9 +14,6 @@ class FormResource extends Resource
 {
     protected static ?string $model = FormModel::class;
 
-    // Remove this property to show the Forms menu again
-    // protected static bool $shouldRegisterNavigation = false;
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
@@ -28,7 +25,6 @@ class FormResource extends Resource
 
     public static function form(Form $form): Form
     {
-        // Helper function to resolve formId to int|null
         $resolveFormId = function ($formId): ?int {
             if ($formId instanceof \Illuminate\Database\Eloquent\Builder || $formId instanceof \Illuminate\Database\Query\Builder) {
                 $formModel = $formId->first();
@@ -42,12 +38,8 @@ class FormResource extends Resource
             return null;
         };
 
-        // Get the form ID from the route parameter 'record'
         $formIdRaw = request()->route('record');
         $formId = $resolveFormId($formIdRaw);
-
-        // Debugging: dump resolved formId
-        \Log::debug('FormResource form() resolved $formId:', ['value' => $formId]);
 
         return $form
             ->schema([
@@ -63,7 +55,7 @@ class FormResource extends Resource
                     ->columnSpan('full')
                     ->view('filament.forms.components.livewire-form-builder')
                     ->extraAttributes(['wire:key' => 'form-builder'])
-                    ->formId($formId ?? 0), // Provide default 0 if null
+                    ->formId($formId ?? 0),
             ]);
     }
 
@@ -71,9 +63,10 @@ class FormResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')->label('Judul')->sortable()->searchable(),
-            // Removed description column as per user request
-            // Tables\Columns\TextColumn::make('description')->limit(50),
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Judul')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('form_url')
                     ->label('URL Formulir')
                     ->getStateUsing(function ($record) {
@@ -93,18 +86,17 @@ class FormResource extends Resource
                     ->label('Dibuat Pada')
                     ->dateTime('d F Y, H:i:s')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('view_posts')
-                    ->label('Lihat Kiriman')
-                    ->getStateUsing(fn ($record) => 'Lihat Kiriman')
-                    ->url(fn ($record) => url('/form/submissions/' . $record->id))
-                    ->openUrlInNewTab(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                // Removed edit action as per user request
-                // Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('view_submissions')
+                    ->label('Lihat Kiriman')
+                    ->icon('heroicon-m-eye')
+                    ->modalContent(fn ($record) => view('filament.forms.modal.submissions', ['formId' => $record->id]))
+                    ->modalHeading(fn ($record) => "Kiriman untuk: {$record->title}")
+                    ->modalWidth('7xl')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

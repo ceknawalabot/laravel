@@ -6,6 +6,9 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use App\Http\Livewire\TestFormBuilder;
 use App\Http\Livewire\FormBuilder;
+use App\Http\Livewire\FormSubmissionsModal;
+
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Livewire::component('test-form-builder', TestFormBuilder::class);
         Livewire::component('form-builder', FormBuilder::class);
+        Livewire::component('form-submissions-modal', FormSubmissionsModal::class);
     }
 }
