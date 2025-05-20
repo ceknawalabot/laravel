@@ -31,10 +31,14 @@ class PayrollResource extends Resource
                     ->required(),
                 Forms\Components\DatePicker::make('pay_period_start')
                     ->label('Periode Gaji Mulai')
-                    ->required(),
+                    ->required()
+                    ->format('d/m/Y')
+                    ->displayFormat('d F Y'),
                 Forms\Components\DatePicker::make('pay_period_end')
                     ->label('Periode Gaji Berakhir')
-                    ->required(),
+                    ->required()
+                    ->format('d/m/Y')
+                    ->displayFormat('d F Y'),
                 Forms\Components\TextInput::make('salary')
                     ->label('Gaji')
                     ->numeric()
@@ -59,8 +63,8 @@ class PayrollResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('employee.first_name')->label('Karyawan')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('pay_period_start')->label('Periode Gaji Mulai')->date()->sortable(),
-                Tables\Columns\TextColumn::make('pay_period_end')->label('Periode Gaji Berakhir')->date()->sortable(),
+                Tables\Columns\TextColumn::make('pay_period_start')->label('Periode Gaji Mulai')->date('d/m/Y')->sortable(),
+                Tables\Columns\TextColumn::make('pay_period_end')->label('Periode Gaji Berakhir')->date('d/m/Y')->sortable(),
                 Tables\Columns\TextColumn::make('salary')->label('Gaji')->sortable(),
                 Tables\Columns\TextColumn::make('bonus')->label('Bonus')->sortable(),
                 Tables\Columns\TextColumn::make('deductions')->label('Potongan')->sortable(),

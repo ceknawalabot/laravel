@@ -89,7 +89,10 @@ class FormResource extends Resource
                         return null;
                     })
                     ->openUrlInNewTab(),
-                Tables\Columns\TextColumn::make('created_at')->label('Dibuat Pada')->dateTime()->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat Pada')
+                    ->dateTime('d F Y, H:i:s')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('view_posts')
                     ->label('Lihat Kiriman')
                     ->getStateUsing(fn ($record) => 'Lihat Kiriman')

@@ -27,6 +27,8 @@ class AttendanceResource extends Resource
             ->schema([
                 Forms\Components\DatePicker::make('date')
                     ->label('Tanggal')
+                    ->format('d/m/Y')
+                    ->displayFormat('d F Y')
                     ->required(),
                 Forms\Components\Select::make('employee_id')
                     ->label('Karyawan')
@@ -47,7 +49,7 @@ class AttendanceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('date')->label('Tanggal')->date()->sortable(),
+                Tables\Columns\TextColumn::make('date')->label('Tanggal')->date('d/m/Y')->sortable(),
                 Tables\Columns\TextColumn::make('employee.first_name')->label('Karyawan')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('status')->label('Status')->sortable(),
             ])

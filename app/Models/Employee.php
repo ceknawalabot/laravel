@@ -26,6 +26,7 @@ class Employee extends Model
         'active_membership_date',
         'passport_expiry_date',
         'visa_expiry_date',
+        'store_id',
     ];
 
     public function department()

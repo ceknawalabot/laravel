@@ -9,8 +9,7 @@
         @foreach ($submissions as $submission)
             <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
                 <h3>ID Pengiriman: {{ $submission->id }}</h3>
-                <p>Karyawan: {{ $submission->employee->name ?? 'N/A' }}</p>
-                <p>Dikirim Pada: {{ $submission->created_at }}</p>
+                <p>Dikirim Pada: {{ $submission->created_at->format('d F Y, H:i:s') }}</p>
                 <h4>Data yang Dikirim:</h4>
                 <ul>
                     @foreach ($form->form_schema as $field)

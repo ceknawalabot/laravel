@@ -54,6 +54,8 @@ class LeaveRequestResource extends Resource
                     ->label('Tanggal Keanggotaan Aktif')
                     ->required()
                     ->reactive()
+                    ->format('d/m/Y')
+                    ->displayFormat('d F Y')
                     ->afterStateUpdated(function (callable $set, $state) {
                         $set('active_membership_date', $state);
                     }),
@@ -65,12 +67,18 @@ class LeaveRequestResource extends Resource
                     ])
                     ->required(),
                 Forms\Components\DatePicker::make('scheduled_return')
-                    ->label('Jadwal Pulang'),
+                    ->label('Jadwal Pulang')
+                    ->format('d/m/Y')
+                    ->displayFormat('d F Y'),
                 Forms\Components\DatePicker::make('start_date')
                     ->label('Tanggal Mulai')
-                    ->required(),
+                    ->required()
+                    ->format('d/m/Y')
+                    ->displayFormat('d F Y'),
                 Forms\Components\DatePicker::make('end_date')
                     ->label('Tanggal Selesai')
+                    ->format('d/m/Y')
+                    ->displayFormat('d F Y')
                     ->required(),
                 Forms\Components\Select::make('type')
                     ->label('Tipe Cuti')
@@ -103,14 +111,14 @@ class LeaveRequestResource extends Resource
                 Tables\Columns\TextColumn::make('employee.position.title')->label('Jabatan')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('employee.department.name')->label('Divisi')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('store.name')->label('Toko')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('active_membership_date')->label('Tanggal Keanggotaan Aktif')->date()->sortable(),
+                Tables\Columns\TextColumn::make('active_membership_date')->label('Tanggal Keanggotaan Aktif')->date('d/m/Y')->sortable(),
                 Tables\Columns\TextColumn::make('contract_extension_status')
                     ->label('Status Perpanjang Kontrak')
                     ->formatStateUsing(fn ($state) => $state ? 'Ya' : 'Tidak')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('scheduled_return')->label('Jadwal Pulang')->date()->sortable(),
-                Tables\Columns\TextColumn::make('start_date')->label('Tanggal Mulai')->date()->sortable(),
-                Tables\Columns\TextColumn::make('end_date')->label('Tanggal Selesai')->date()->sortable(),
+                Tables\Columns\TextColumn::make('scheduled_return')->label('Jadwal Pulang')->date('d/m/Y')->sortable(),
+                Tables\Columns\TextColumn::make('start_date')->label('Tanggal Mulai')->date('d/m/Y')->sortable(),
+                Tables\Columns\TextColumn::make('end_date')->label('Tanggal Selesai')->date('d/m/Y')->sortable(),
                 Tables\Columns\TextColumn::make('type')->label('Tipe Cuti')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('status')->label('Status')->sortable(),
             ])

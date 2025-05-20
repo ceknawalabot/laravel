@@ -25,6 +25,10 @@ class EmployeeResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('store_id')
+                    ->label('Toko')
+                    ->relationship('store', 'name')
+                    ->nullable(),
                 Forms\Components\TextInput::make('first_name')
                     ->label('Nama Depan')
                     ->required()
@@ -59,11 +63,17 @@ class EmployeeResource extends Resource
                     ->label('Nomor Rekening')
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('active_membership_date')
-                    ->label('Tanggal Keanggotaan Aktif'),
+                    ->label('Tanggal Keanggotaan Aktif')
+                    ->format('d/m/Y')
+                    ->displayFormat('d/m/Y'),
                 Forms\Components\DatePicker::make('passport_expiry_date')
-                    ->label('Expired Passport'),
+                    ->label('Expired Passport')
+                    ->format('d/m/Y')
+                    ->displayFormat('d/m/Y'),
                 Forms\Components\DatePicker::make('visa_expiry_date')
-                    ->label('Expired Visa'),
+                    ->label('Expired Visa')
+                    ->format('d/m/Y')
+                    ->displayFormat('d/m/Y'),
                 Forms\Components\Select::make('status')
                     ->label('Status')
                     ->options([
@@ -85,16 +95,25 @@ class EmployeeResource extends Resource
                 Tables\Columns\TextColumn::make('email')->label('Email')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('phone')->label('Telepon')->sortable(),
                 Tables\Columns\TextColumn::make('department.name')->label('Divisi')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('store.name')->label('Toko')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('position.title')->label('Jabatan')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('bank')->label('Bank')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('account_number')->label('Nomor Rekening')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('active_membership_date')->label('Tanggal Keanggotaan Aktif')->date()->sortable(),
-                Tables\Columns\TextColumn::make('passport_expiry_date')->label('Expired Passport')->date()->sortable(),
-                Tables\Columns\TextColumn::make('visa_expiry_date')->label('Expired Visa')->date()->sortable(),
+                Tables\Columns\TextColumn::make('active_membership_date')->label('Tanggal Keanggotaan Aktif')->date('d/m/Y')->sortable(),
+                Tables\Columns\TextColumn::make('passport_expiry_date')->label('Expired Passport')->date('d/m/Y')->sortable(),
+                Tables\Columns\TextColumn::make('visa_expiry_date')->label('Expired Visa')->date('d/m/Y')->sortable(),
                 Tables\Columns\TextColumn::make('status')->label('Status')->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('store_id')
+                    ->label('Toko')
+                    ->relationship('store', 'name'),
+                Tables\Filters\SelectFilter::make('department_id')
+                    ->label('Divisi')
+                    ->relationship('department', 'name'),
+                Tables\Filters\SelectFilter::make('position_id')
+                    ->label('Jabatan')
+                    ->relationship('position', 'title'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->label('Ubah'),
