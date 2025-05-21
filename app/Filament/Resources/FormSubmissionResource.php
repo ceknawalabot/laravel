@@ -23,9 +23,7 @@ class FormSubmissionResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('employee_id')
-                    ->relationship('employee', 'first_name')
-                    ->label('Karyawan'),
+                // Removed employee_id Select field as per user request
                 Forms\Components\KeyValue::make('submission_data')
                     ->label('Data yang Dikirim')
                     ->keyLabel('Field')
@@ -52,9 +50,7 @@ class FormSubmissionResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->modalWidth('lg')
-                    ->label('Ubah'),
+                // Removed EditAction to prevent conflict with Livewire modal editing
                 Tables\Actions\DeleteAction::make()
                     ->label('Hapus'),
             ])

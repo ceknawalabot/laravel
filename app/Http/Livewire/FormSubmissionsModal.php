@@ -4,13 +4,15 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\FormSubmission;
+use Illuminate\Support\Facades\Log;
 
 class FormSubmissionsModal extends Component
 {
     public $formId;
     public $submissions = [];
     public $editingSubmission = null;
-    public $editingData = [];
+    public $editingDataPublic = [];
+    public $originalData = [];
 
     public function mount($formId)
     {
@@ -24,23 +26,15 @@ class FormSubmissionsModal extends Component
             ->latest()
             ->get();
 
-        \Log::info('Form ID: ' . $this->formId);
-        \Log::info('Submissions count: ' . $submissions->count());
-
         $this->submissions = $submissions->map(function ($submission) {
             $data = $submission->submission_data;
-            \Log::info('Processing submission data:', ['data' => $data]);
+            $dataToFormat = is_array($data) && isset($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
 
             $formattedData = [];
-            if (is_array($data)) {
-                foreach ($data as $key => $value) {
-                    if (is_array($value)) {
-                        $formattedData[] = "$key: " . json_encode($value);
-                    } else {
-                        $formattedData[] = "$key: $value";
-                    }
-                }
+            foreach ($dataToFormat as $key => $value) {
+                $formattedData[] = is_array($value) ? "$key: " . json_encode($value) : "$key: $value";
             }
+
             return [
                 'id' => $submission->id,
                 'tanggal' => $submission->created_at->format('d F Y, H:i:s'),
@@ -51,15 +45,17 @@ class FormSubmissionsModal extends Component
         });
     }
 
-    public function startEdit($submissionId)
+    public function loadEditData($submissionId)
     {
-        \Log::info('Starting edit for submission: ' . $submissionId);
+        $this->editingSubmission = $submissionId;
         $submission = collect($this->submissions)->firstWhere('id', $submissionId);
+        
         if ($submission) {
-            \Log::info('Found submission, setting edit state');
-            $this->editingSubmission = $submissionId;
-            $this->editingData = $this->flattenData($submission['raw_data']);
-            \Log::info('Edit data:', ['data' => $this->editingData]);
+            $rawData = $submission['raw_data'];
+            $this->editingDataPublic = $this->flattenData(
+                isset($rawData['data']) ? $rawData['data'] : $rawData
+            );
+            $this->originalData = $rawData;
         }
     }
 
@@ -67,7 +63,7 @@ class FormSubmissionsModal extends Component
     {
         $result = [];
         foreach ($data as $key => $value) {
-            $newKey = $prefix === '' ? $key : $prefix . '.' . $key;
+            $newKey = $prefix ? $prefix . '_' . $key : $key;
             if (is_array($value)) {
                 $result = array_merge($result, $this->flattenData($value, $newKey));
             } else {
@@ -81,10 +77,10 @@ class FormSubmissionsModal extends Component
     {
         $result = [];
         foreach ($data as $key => $value) {
-            $keys = explode('.', $key);
+            $keys = explode('_', $key);
             $temp = &$result;
             foreach ($keys as $innerKey) {
-                if (!isset($temp[$innerKey]) || !is_array($temp[$innerKey])) {
+                if (!isset($temp[$innerKey])) {
                     $temp[$innerKey] = [];
                 }
                 $temp = &$temp[$innerKey];
@@ -97,21 +93,35 @@ class FormSubmissionsModal extends Component
     public function cancelEdit()
     {
         $this->editingSubmission = null;
-        $this->editingData = [];
+        $this->editingDataPublic = [];
+        $this->originalData = [];
     }
 
     public function saveEdit()
     {
-        \Log::info('Saving edit for submission: ' . $this->editingSubmission);
-        \Log::info('Editing data:', ['data' => $this->editingData]);
-        $submission = FormSubmission::find($this->editingSubmission);
+        if ($this->editingSubmission) {
+            $submission = FormSubmission::find($this->editingSubmission);
+            if ($submission) {
+                $submission->update([
+                    'submission_data' => $this->unflattenData($this->editingDataPublic)
+                ]);
+                $this->cancelEdit();
+                $this->loadSubmissions();
+            }
+        }
+    }
+
+    public function deleteSubmission($submissionId)
+    {
+        $submission = FormSubmission::find($submissionId);
         if ($submission) {
-            $unflattenedData = $this->unflattenData($this->editingData);
-            $submission->update([
-                'submission_data' => $unflattenedData
-            ]);
-            $this->cancelEdit();
-            $this->loadSubmissions();
+            try {
+                $submission->delete();
+                $this->loadSubmissions();
+            } catch (\Exception $e) {
+                // Log error or handle as needed
+                \Log::error("Failed to delete submission ID {$submissionId}: " . $e->getMessage());
+            }
         }
     }
 
