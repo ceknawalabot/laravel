@@ -13,6 +13,7 @@ class Employee extends Model
         'first_name',
         'last_name',
         'email',
+        'password',
         'phone',
         'department_id',
         'position_id',
@@ -28,6 +29,27 @@ class Employee extends Model
         'visa_expiry_date',
         'store_id',
     ];
+
+    protected $hidden = [
+        'password',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($employee) {
+            if ($employee->password) {
+                $employee->password = bcrypt($employee->password);
+            }
+        });
+
+        static::updating(function ($employee) {
+            if ($employee->isDirty('password') && $employee->password) {
+                $employee->password = bcrypt($employee->password);
+            }
+        });
+    }
 
     public function department()
     {

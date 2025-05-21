@@ -44,6 +44,12 @@ class EmployeeResource extends Resource
                     ->label('Email')
                     ->email()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('password')
+                    ->label('Password')
+                    ->password()
+                    ->maxLength(255)
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->required(fn (string $context): bool => $context === 'create'),
                 Forms\Components\TextInput::make('phone')
                     ->label('Telepon')
                     ->tel()
@@ -93,6 +99,14 @@ class EmployeeResource extends Resource
                 Tables\Columns\TextColumn::make('last_name')->label('Nama Belakang')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('account_holder_name')->label('Nama Rekening')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('email')->label('Email')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('password')
+                    ->label('Password')
+                    ->formatStateUsing(function ($state, $record) {
+                        if (!$state) return '-';
+                        return view('filament.components.password-toggle', [
+                            'password' => $state,
+                        ]);
+                    }),
                 Tables\Columns\TextColumn::make('phone')->label('Telepon')->sortable(),
                 Tables\Columns\TextColumn::make('department.name')->label('Divisi')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('store.name')->label('Toko')->sortable()->searchable(),
